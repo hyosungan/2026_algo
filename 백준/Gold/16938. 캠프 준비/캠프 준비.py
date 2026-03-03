@@ -1,25 +1,33 @@
 import sys
-input=sys.stdin.readline
+input = sys.stdin.readline
 
-N,L,R,X=map(int,input().split())
-arr=list(map(int,input().split()))
+N,L,R,X = map(int,input().split())
+arr = list(map(int,input().split()))
 
-#문제는 2문제 이상이어야함
-#문제 난이도 합은 L이상 R이하 여야함
-#젤 쉬운 문제와 젤 어려운 문제 난이도 차이는 X 이상이어야함
-ans=0
-def recur(idx,array):
+ans = 0
+INF = 10**9
+
+def dfs(i, cnt, s, mn, mx):
     global ans
-    if idx==N:
-        if len(array)>=2:
-            if abs(max(array)-min(array))>=X:
-                if L<=sum(array)<=R:
-                    ans+=1
+
+    # 가지치기: 합이 이미 R 넘으면 더 볼 필요 없음 (난이도는 양수라 더 커지기만 함)
+    if s > R:
         return
-    #할래
-    recur(idx+1,array+[arr[idx]])
-    
-    #안할래
-    recur(idx+1,array)
-recur(0,[])
+
+    if i == N:
+        if cnt >= 2 and mx - mn >= X and L <= s <= R:
+            ans += 1
+        return
+
+    # 선택
+    v = arr[i]
+    if cnt == 0:
+        dfs(i+1, 1, s+v, v, v)
+    else:
+        dfs(i+1, cnt+1, s+v, mn if mn < v else v, mx if mx > v else v)
+
+    # 미선택
+    dfs(i+1, cnt, s, mn, mx)
+
+dfs(0, 0, 0, INF, -INF)
 print(ans)
