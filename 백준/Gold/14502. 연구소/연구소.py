@@ -20,10 +20,8 @@ for i in range(N):
         elif arr[i][j]==2:
             virus.append((i,j))
 
-ans=0
-for a,b,c in combinations(zeros,3):
-    temp=[row[:] for row in arr]
-    temp[a[0]][a[1]],temp[b[0]][b[1]],temp[c[0]][c[1]]=1,1,1
+# --- 수정된 부분: BFS 로직을 함수로 묶음 ---
+def bfs(temp):
     q.clear()
     q.extend(virus)
     while q:
@@ -38,6 +36,16 @@ for a,b,c in combinations(zeros,3):
         for j in range(M):
             if not temp[i][j]:
                 cnt+=1
+    return cnt
+# ------------------------------------------
+
+ans=0
+for a,b,c in combinations(zeros,3):
+    temp=[row[:] for row in arr]
+    temp[a[0]][a[1]],temp[b[0]][b[1]],temp[c[0]][c[1]]=1,1,1
+    
+    # 함수 호출로 변경
+    cnt = bfs(temp)
     
     ans=max(ans,cnt)    
 
